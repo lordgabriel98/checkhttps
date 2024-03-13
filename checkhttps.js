@@ -1,16 +1,50 @@
-const fccUrl = new URL("https://www.pngec.gov.pg");
+const tls = require('tls');
+const websitesData = require('./govWeb.json');
 
-console.log(fccUrl);
 
-/*
-const isValidUrl = (url)=>{
-	let fccUrl = new URL(url);
+const checkSSL = async(hostname) =>{
+	return new Promise((resolve, reject)=>{
+		const options = {
+
+			host: hostname,
+			port: 443,
+			rejectUnauthorized: false,
+		};
+
+		const socket = tls.connect(options, () =>{
+			
+			const isSSL = socket instanceof tls.TLSSocket;
+
+			socket.end();
+
+			resolve(isSSL);
+		});
+
+		socket.on('error', (error)=>{
+			reject(error);
+		});
+
+	});
+
+
+};
+
+
+const checkWebsites = async ()=>{ 
+ const websites = Object.values(websitesData);
+
+for (let website of websites){
 	
-	if(fccUrl[protocol]==='https:'){
-		return true;	
-	} else{
-		return false;
-	} 
+	try{
+		const isSSL = await checkSSL(website);
+		console.log(`${website} is using SSL: ${isSSL}`);
+	
+	}catch(error){
+		console.error(`Error checking SSL for ${website}`);
+			}
+									
+	}	
 }
-*/
-//isValidUrl('www.pngec.gov.pg');
+
+
+checkWebsites();
