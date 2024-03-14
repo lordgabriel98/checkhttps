@@ -1,4 +1,5 @@
 const https = require('https');
+const websitesData = require('./govweb.json');
 
 
 //Function to check if the website has a valid SSL certificate
@@ -19,7 +20,7 @@ const checkSSLValidity = (domain) => {
                          console.log(`${url}'s SSL certificate is expired.`);
                  }
             
-	       } else {
+	      } else {
                	         console.log(`${url} does not use SSL/TLS or the certificate could not be verified.`);
                       }
 
@@ -31,5 +32,20 @@ const checkSSLValidity = (domain) => {
 
 
 
-checkSSLValidity('www.pngec.gov.pg');
+const checkWebsites = async ()=>{
+	const websites = Object.values(websitesData);
 
+	for (let website of websites){
+
+		        try{
+		                const isSSL = await checkSSLValidity(website);
+		                console.log(`${website} is using SSL: ${isSSL}`);
+
+		        }catch(error){
+		                console.error(`Error checking SSL for ${website}`);
+						                        }
+
+		        }
+}
+
+checkWebsites();
