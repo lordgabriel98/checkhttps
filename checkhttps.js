@@ -1,7 +1,10 @@
- const https = require('https');
+const https = require('https');
+
 
 //Function to check if the website has a valid SSL certificate
-const checkSSLValidity = (url) => {
+const checkSSLValidity = (domain) => {
+	const url = `https://${domain}`
+
   https.get(url, (res) => {
        const certificate = res.socket.getPeerCertificate();
 
@@ -25,6 +28,8 @@ const checkSSLValidity = (url) => {
 			console.error(`Error checking SSL certificate for ${url}: `, e);
                         });
                     };
+
+
 
 checkSSLValidity('www.pngec.gov.pg');
 
