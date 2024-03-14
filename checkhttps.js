@@ -3,10 +3,16 @@ const websitesData = require('./govweb.json');
 
 
 //Function to check if the website has a valid SSL certificate
-const checkSSLValidity = (domain) => {
-	const url = `https://${domain}`
+const checkSSLValidity = (domain, timeout) => {
+	const url = `https://${domain}`;
 
-  https.get(url, (res) => {
+	return new Promise((resolve, reject)=>{
+		const options = {
+			timeout:timeout
+		};
+	
+
+  https.get(url, options, (res) => {
        const certificate = res.socket.getPeerCertificate();
 
            // Check if the certificate object is not empty and valid
@@ -14,26 +20,28 @@ const checkSSLValidity = (domain) => {
                    const validTo = new Date(certificate.valid_to);
                    const isValid = validTo > new Date(); // Check if the certificate is currently valid
 
-                   if (isValid) {
-                         console.log(`${url} has a valid SSL certificate.`);
-                 } else {
-                         console.log(`${url}'s SSL certificate is expired.`);
-                 }
+                  resolve(isValid);
+                         
+                 
             
 	      } else {
-               	         console.log(`${url} does not use SSL/TLS or the certificate could not be verified.`);
+               	         resolve(false);
                       }
 
   			}).on('error', (e) => {
                         
-			console.error(`Error checking SSL certificate for ${url}: `, e);
+			reject(e);
                         });
+			});
                     };
 
+
+// checkSSLValidity('www.rpngc.gov.pg', 5000);
 
 
 const checkWebsites = async ()=>{
 	const websites = Object.values(websitesData);
+	const timeout = 10000;
 
 	for (let website of websites){
 
@@ -49,3 +57,5 @@ const checkWebsites = async ()=>{
 }
 
 checkWebsites();
+
+
