@@ -1,7 +1,7 @@
 ## checkhttps
 ---
 
-- A `JavaScript` console application designed to verify the authenticity of `SSL` (`TLS`) certificates associated with websites.
+- A `bash` script application designed to verify the authenticity of `SSL` (`TLS`) certificates associated with websites.
 
 
 ### Disclaimer
